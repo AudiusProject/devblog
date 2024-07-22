@@ -1,0 +1,16 @@
+audius_eng:
+  name: Audius Engineering
+  url: https://github.com/AudiusProject
+  image_url: https://builtonsolana.com/wp-content/uploads/2020/01/audius-review.jpeg
+
+sebastian:
+  name: Sebastian Klingler
+  title: Senior Engineer
+  url: https://github.com/sliptype
+  image_url: https://avatars.githubusercontent.com/u/19916043?v=4
+
+ray:
+  name: Ray Jacobson
+  title: Chief Technology Officer
+  url: https://github.com/raymondjacobson
+  image_url: https://avatars.githubusercontent.com/u/2731362?v=4
