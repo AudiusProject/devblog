@@ -40,7 +40,7 @@ Check out our repo at
 
 :::
 
-## A Little Background…
+## ⏳ A Little Background…
 
 Every time an Audius client initializes, it performs a main-net eth (read-only)
 contract call to fetch a list of available discovery services for clients to
@@ -65,7 +65,7 @@ approach, a project can easily swap out providers or add additional providers on
 the fly, including multiple providers and API keys from the start to increase
 resilience to these types of issues in the first place.
 
-## Enter Cloudflare Workers
+## 👩‍💻 Enter Cloudflare Workers
 
 We were able to use Cloudflare workers to set up a small piece of infrastructure
 to help meet our demands.The Audius project team wrote a simple Javascript
@@ -77,7 +77,7 @@ returned when there is a hit, skipping expensive and unnecessary chain reads.
 
 > This means less downtime, reduced costs, and improved load-time.
 
-## In Action
+## 🏃‍♂️‍➡️ In Action
 
 As it stands today, nearly 80% of all of the Audius client’s onchain requests
 are being served by the Cloudflare cache with no perceived degradation of

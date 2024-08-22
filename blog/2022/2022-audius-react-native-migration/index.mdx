@@ -2,7 +2,7 @@
 authors:
   - audius_eng
   - sebastian
-tags: [release]
+tags: [engineering]
 slug: /audius-react-native-migration
 description: Audius React Native Migration
 image: ./img/social-card.png
@@ -49,7 +49,7 @@ developers:
 - Running the app locally required bundling and serving the web app before
   running the React Native layer
 
-## Migrating to React Native
+## 🚚 Migrating to React Native
 
 To provide users and developers with a better experience, we decided to remove
 the WebView and build a fully React Native mobile application.
@@ -82,7 +82,7 @@ logic.
 
 ‍
 
-## Preliminary step - Monorepo
+## 🪜 Preliminary step - Monorepo
 
 One of the first changes that made the migration more efficient was the move to
 an audius-client monorepo that contains both the Audius web client and the
@@ -90,7 +90,7 @@ Audius mobile app. Combining these repositories reduced overhead as we migrated
 individual screens and features to React Native. We no longer had to make
 separate pull requests for a single feature!
 
-## Phase 1 - React Native UI
+## ☝️ Phase 1 - React Native UI
 
 The plan for Phase 1 was to incrementally implement screens and features using
 React Native while keeping the WebView around as the state management layer. The
@@ -151,7 +151,7 @@ In this way we created a completely transparent interface for React Native
 components to access a redux store that lived inside the Audius web app inside a
 WebView. This made writing the new UI components a breeze!
 
-## Phase 2 - Full React Native
+## ✌️ Phase 2 - Full React Native
 
 The plan for Phase 2 was to remove the WebView entirely by running the common
 business logic directly in React Native. This presented another big challenge:
@@ -186,7 +186,7 @@ useDispatch counterparts.
 When no more components depended on the WebView, it was finally time to delete
 it and celebrate!
 
-## Results
+## 📊 Results
 
 As a result of the migration, the mobile app is no longer limited in performance
 by running inside a browser. The mobile experience is noticeably smoother, with
