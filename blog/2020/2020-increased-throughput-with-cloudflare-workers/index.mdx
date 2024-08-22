@@ -6,48 +6,89 @@ tags: [release]
 slug: /how-audius-increased-throughput-with-cloudflare-workers
 description: How Audius Increased Throughput With Cloudflare Workers
 image: ./img/social-card.png
+date: 2020-11-17T00:00
 ---
 
 # How Audius Increased Throughput With Cloudflare Workers
 
+[Audius](https://audius.co/) faces many challenging engineering problems running
+crypto code at [consumer scale](https://dashboard.audius.org/), namely the
+recent issues around client communication with the Ethereum blockchain
+(eth-rpc). This includes:
 
-[Audius](https://audius.co/) faces many challenging engineering problems running crypto code at [consumer scale](https://dashboard.audius.org/), namely the recent issues around client communication with the Ethereum blockchain (eth-rpc). This includes:
-
-Reliance on a single web3 provider that has proven to be a [dangerous single point](https://thedefiant.io/an-infrastructure-outage-temporarily-broke-defi/) of failure.
-Different users frequently reading the same data from the chain, which is both expensive and inefficient.
-Leaking API keys to paid providers isn’t great when they’re hard-coded in a client or DApp
-We’ve found that using Cloudflare workers with an assortment of different web3 mainnet eth providers effectively mitigates these concerns.
+Reliance on a single web3 provider that has proven to be a
+[dangerous single point](https://thedefiant.io/an-infrastructure-outage-temporarily-broke-defi/)
+of failure. Different users frequently reading the same data from the chain,
+which is both expensive and inefficient. Leaking API keys to paid providers
+isn’t great when they’re hard-coded in a client or DApp We’ve found that using
+Cloudflare workers with an assortment of different web3 mainnet eth providers
+effectively mitigates these concerns.
 
 ![social card](./img/social-card.png)
 
 <!--truncate-->
 
-
-> We’ve found that using Cloudflare workers with an assortment of different web3 mainnet eth providers effectively mitigates these concerns.
+> We’ve found that using Cloudflare workers with an assortment of different web3
+> mainnet eth providers effectively mitigates these concerns.
 
 ![proxy provider](./img/proxy-provider.png)
 
 :::tip
 
-Check out our repo at [https://github.com/AudiusProject/web3-provider-proxy](https://github.com/AudiusProject/web3-provider-proxy)
+Check out our repo at
+[https://github.com/AudiusProject/web3-provider-proxy](https://github.com/AudiusProject/web3-provider-proxy)
 
 :::
 
-
 ## A Little Background…
 
-Every time an Audius client initializes, it performs a main-net eth (read-only) contract call to fetch a list of available discovery services for clients to talk to. Even something as simple as viewing the trending tracks on Audius requires first hitting the chain to set the backend against which the client will communicate.This process of picking a backend can be simplified down to listing the available services registered on main-net eth and picking the fastest (in reality, it’s slightly more complex). As you can imagine, this process results in a tremendous amount of reads of a nearly-static list over the main-net ethereum web3 json rpc protocol. Worse still, the client does this on each initial load, where every millisecond counts. The data we get here needs to be fresh, but it doesn’t need to be that fresh as it seldom differs user-to-user across a short time period.
+Every time an Audius client initializes, it performs a main-net eth (read-only)
+contract call to fetch a list of available discovery services for clients to
+talk to. Even something as simple as viewing the trending tracks on Audius
+requires first hitting the chain to set the backend against which the client
+will communicate.This process of picking a backend can be simplified down to
+listing the available services registered on main-net eth and picking the
+fastest (in reality, it’s slightly more complex). As you can imagine, this
+process results in a tremendous amount of reads of a nearly-static list over the
+main-net ethereum web3 json rpc protocol. Worse still, the client does this on
+each initial load, where every millisecond counts. The data we get here needs to
+be fresh, but it doesn’t need to be that fresh as it seldom differs user-to-user
+across a short time period.
 
-> Enabling caching in a proxy layer buys us performance gains as well as reducing our need to depend on a single-point-of-failure eth provider. Win win!
+> Enabling caching in a proxy layer buys us performance gains as well as
+> reducing our need to depend on a single-point-of-failure eth provider. Win
+> win!
 
-Beyond the performance gains to be had, last week’s Infura outage demonstrated the community’s reliance on a small number of web3 providers.By using this approach, a project can easily swap out providers or add additional providers on the fly, including multiple providers and API keys from the start to increase resilience to these types of issues in the first place.
+Beyond the performance gains to be had, last week’s Infura outage demonstrated
+the community’s reliance on a small number of web3 providers.By using this
+approach, a project can easily swap out providers or add additional providers on
+the fly, including multiple providers and API keys from the start to increase
+resilience to these types of issues in the first place.
 
 ## Enter Cloudflare Workers
 
-We were able to use Cloudflare workers to set up a small piece of infrastructure to help meet our demands.The Audius project team wrote a simple Javascript worker that runs on every Cloudflare edge location, receiving incoming eth-rpc requests. The requests are parsed and forwarded to a web3 provider chosen-on-the-fly, whose responses are then cached — keyed by the request’s body parameters. Subsequent eth-rpc calls are checked against the cache and eagerly returned when there is a hit, skipping expensive and unnecessary chain reads.
+We were able to use Cloudflare workers to set up a small piece of infrastructure
+to help meet our demands.The Audius project team wrote a simple Javascript
+worker that runs on every Cloudflare edge location, receiving incoming eth-rpc
+requests. The requests are parsed and forwarded to a web3 provider
+chosen-on-the-fly, whose responses are then cached — keyed by the request’s body
+parameters. Subsequent eth-rpc calls are checked against the cache and eagerly
+returned when there is a hit, skipping expensive and unnecessary chain reads.
 
 > This means less downtime, reduced costs, and improved load-time.
 
 ## In Action
 
-As it stands today, nearly 80% of all of the Audius client’s onchain requests are being served by the Cloudflare cache with no perceived degradation of service by end users 🎉.Now, any DApp can be more resilient to web3 provider issues of any kind. This should also include fallback logic directly, to avoid the centralization risk introduced by the project team too.Check out our repo! This code is offered as a starting point rather than an all-in-one solution — cache parameters such as TTL are configurable and should be tuned & refined per project.In terms of future work, we can envision a world in which workers are smarter, potentially performing specific actions based on the entire body of the request. One could dynamically forward requests to different providers based on the content, run caching experiments on slices of traffic, or even dynamically switch providers.The future is wide open for this package, and we’re eager to see where the broader web3 community takes it!
+As it stands today, nearly 80% of all of the Audius client’s onchain requests
+are being served by the Cloudflare cache with no perceived degradation of
+service by end users 🎉.Now, any DApp can be more resilient to web3 provider
+issues of any kind. This should also include fallback logic directly, to avoid
+the centralization risk introduced by the project team too.Check out our repo!
+This code is offered as a starting point rather than an all-in-one
+solution — cache parameters such as TTL are configurable and should be tuned &
+refined per project.In terms of future work, we can envision a world in which
+workers are smarter, potentially performing specific actions based on the entire
+body of the request. One could dynamically forward requests to different
+providers based on the content, run caching experiments on slices of traffic, or
+even dynamically switch providers.The future is wide open for this package, and
+we’re eager to see where the broader web3 community takes it!
