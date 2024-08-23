@@ -1,3 +1,4 @@
+/* stylelint-disable docusaurus/copyright-header */
 /**
  * Any CSS included here will be global. The classic template
  * bundles Infima by default. Infima is a CSS framework designed to
@@ -5,51 +6,173 @@
  */
 
 /* You can override the default Infima variables here. */
-:root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
-  --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto");
+@import "fonts.css";
+@import "colors.css";
+
+:root,
+footer {
+  --ifm-background-color: var(--white);
+  --ifm-navbar-background-color: var(--white);
+  --ifm-color-primary: var(--secondary-dark-2);
+  --ifm-color-primary-dark: var(--secondary-dark-1);
+  --ifm-color-primary-darker: var(--secondary-dark-2);
+  --ifm-color-primary-darkest: var(--neutral-dark-1);
+  --ifm-color-primary-light: var(--secondary-light-1);
+  --ifm-color-primary-lighter: var(--secondary-light-2);
+  --ifm-color-primary-lightest: var(--neutral-light-4);
+  --ifm-code-font-size: 75%;
+  --ifm-code-font-weight: 600;
+  --ifm-spacing-horizontal: 1em;
+  --ifm-font-family-base: "Avenir Next LT Pro", system-ui, -apple-system,
+    Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif,
+    BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --ifm-heading-color: var(--neutral-dark-3);
+  --ifm-font-color-base: var(--neutral-dark-3);
+  --ifm-font-weight-base: 500;
+  --ifm-footer-background-color: #35364f !important;
+  --ifm-code-background: var(--neutral-light-10);
+  --ifm-code-padding-horizontal: 2px;
+  --docsearch-searchbox-background: var(--white);
+  --ifm-color-danger-contrast-background: var(--accent-red);
+  --ifm-color-danger-contrast-foreground: var(--static-white);
+  --ifm-color-success-contrast-background: var(--accent-green);
+  --ifm-color-success-contrast-foreground: var(--static-white);
+  --ifm-tabs-padding-horizontal: 20px;
+  --ifm-tabs-padding-vertical: 10px;
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
-[data-theme="dark"] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+html[data-theme="dark"] {
+  --background: #242438;
+
+  --primary: #c74bd3;
+  --primary-dark-1: #c556d4;
+  --primary-dark-2: #c563d6;
+  --primary-light-1: #b748c6;
+  --primary-light-2: #a945b9;
+
+  --secondary: #9147cc;
+  --secondary-transparent: rgba(126, 27, 204, 0.85);
+  --secondary-dark-1: #975acd;
+  --secondary-dark-2: #9a60cf;
+  --secondary-light-1: #8244b8;
+  --secondary-light-2: #7440a4;
+
+  --primary-secondary-text: var(--static-white);
+
+  --neutral: #bec5e0;
+  --neutral-dark-1: #c4cae1;
+  --neutral-dark-2: #cbd1e3;
+  --neutral-dark-3: #e0e6fa;
+  --neutral-light-1: #a2a8c2;
+  --neutral-light-2: #9399b3;
+  --neutral-light-3: #868aa4;
+  --neutral-light-4: #777c96;
+  --neutral-light-5: #696d88;
+  --neutral-light-6: #5a5e78;
+  --neutral-light-7: #4e4f6a;
+  --neutral-light-8: #3f415b;
+  --neutral-light-9: #393a54;
+  --neutral-light-10: #35364f;
+  --white: #32334d;
+  --darkmode-static-white: var(--static-white);
+
+  --accent-red-dark-1: #c43047;
+
+  --special-light-green: #13c65a;
+
+  --page-header-gradient-color-1: #7652cc;
+  --page-header-gradient-color-2: #b05ce6;
+
+  --ifm-background-color: var(--white);
+  --ifm-code-background: var(--neutral-light-9);
+
+  --ifm-color-danger-contrast-background: var(--accent-red);
+  --ifm-color-danger-contrast-foreground: var(--static-white);
+  --ifm-color-success-contrast-background: var(--accent-green);
+  --ifm-color-success-contrast-foreground: var(--static-white);
 }
 
-/* Screen Snippet Display Boxes */
-.markdown img {
-  align-items: center;
-  background: #f5f7fd;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin: 0; /*overrides default*/
-  padding: 0.5rem;
-  width: 100%;
+.breadcrumbs__item--active .breadcrumbs__link,
+.menu__link--active:not(.menu__link--sublist) {
+  background-color: var(--secondary);
+  color: var(--static-white);
 }
 
-html[data-theme="dark"] .markdown img {
-  align-items: center;
-  background: #323232;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin: 0; /*overrides default*/
-  padding: 0.5rem;
-  width: 100%;
+html {
+  font-weight: var(--ifm-font-weight-base);
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+}
+
+main {
+  margin: 1rem 0 5rem 0;
+}
+
+.docusaurus-highlight-code-line {
+  background-color: rgb(72, 77, 91);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+.card {
+  padding: 1rem;
+  margin-top: 0rem;
+  animation: fadeInUp 400ms backwards;
+  animation-delay: 150ms;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 15px -4px rgba(126, 27, 204, 0.3);
+  margin-bottom: 2rem;
+  min-height: 183px;
+}
+
+.card a {
+  text-decoration: none;
+}
+
+.card:hover {
+  transform: translate(0px, -5px);
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+/* .footer--dark {
+  background-color: #4d535a !important;
+} */
+
+footer .text--center {
+  padding: 2rem 0 0 0;
+}
+
+.card__header h3 {
+  color: var(--ifm-color-primary-dark);
+}
+
+/* ///////////////////////////////////////////////////////////////////////// */
+/*                        Customized CSS Starts Here                         */
+/* ///////////////////////////////////////////////////////////////////////// */
+
+code {
+  font-weight: 600;
+  color: var(--neutral-dark-1);
+}
+
+/* force underline on links */
+article div a:link {
+  text-decoration: underline;
+}
+
+/* padding between navbar and body */
+article {
+  padding-left: 1.5rem;
 }
