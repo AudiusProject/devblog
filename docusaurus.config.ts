@@ -54,22 +54,15 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: "img/docusaurus-social-card.jpg",
+    image: "img/social-card.jpg",
     navbar: {
       title: "| Engineering Blog",
       logo: {
-        alt: "My Site Logo",
+        alt: "Audius Engineering Typogrphic Logo",
         // src: 'img/logo.svg',
         src: "img/logo.png",
       },
       items: [
-        // {
-        //   type: 'docSidebar',
-        //   sidebarId: 'tutorialSidebar',
-        //   position: 'left',
-        //   label: 'Tutorial',
-        // },
-        // {to: '/blog', label: 'Blog', position: 'left'},
         {
           href: "https://docs.audius.org",
           label: "Read the Docs",
@@ -91,6 +84,10 @@ const config: Config = {
             {
               label: "Read the Docs",
               href: "https://docs.audius.org",
+            },
+            {
+              label: "Explore the SDK",
+              href: "https://docs.audius.org/sdk",
             },
           ],
         },
