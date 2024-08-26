@@ -58,7 +58,7 @@ const config: Config = {
     navbar: {
       title: "| Engineering Blog",
       logo: {
-        alt: "Audius Engineering Typogrphic Logo",
+        alt: "Audius Engineering Logo",
         // src: 'img/logo.svg',
         src: "img/logo.png",
       },

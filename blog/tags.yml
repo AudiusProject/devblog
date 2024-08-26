@@ -1,19 +1,18 @@
-blog:
-release:
-  description: "Blog posts about Docusaurus' new releases"
-recap:
-  description: "Blog posts about Docusaurus' year recaps"
-birth:
-endi:
-tribute:
-i18n:
-beta:
-search:
-maintenance:
-documentation:
-docusaurus:
-profilo:
-adoption:
 unlisted:
+  description: "Blog posts about Audius' unlisted"
+search:
+  description: "Blog posts about Audius' search"
+release:
+  description: "Blog posts about Audius' new releases"
+recap:
+  description: "Blog posts about Audius' year recaps"
 new:
+  description: "Blog posts about Audius' new"
+maintenance:
+  description: "Blog posts about Audius' maintenance"
+engineering:
+  description: "Blog posts about Audius' engineering"
+documentation:
+  description: "Blog posts about Audius' documentation"
 announcements:
+  description: "Blog posts about Audius' announcements"
