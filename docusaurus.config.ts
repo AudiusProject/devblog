@@ -56,11 +56,11 @@ const config: Config = {
     // Replace with your project's social card
     image: "img/social-card.jpg",
     navbar: {
-      title: "| Engineering Blog",
+      // title: "| Engineering Blog",
       logo: {
         alt: "Audius Engineering Logo",
-        // src: 'img/logo.svg',
-        src: "img/logo.png",
+        src: "img/logo.svg",
+        srcDark: "img/logo-white.svg",
       },
       items: [
         {
