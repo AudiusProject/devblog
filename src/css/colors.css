@@ -9,22 +9,20 @@
   --background: #f3f0f7;
 
   --primary: #cc0fe0;
-  --primary-dark-1: #b80eca;
-  --primary-dark-2: #a30cb3;
   --primary-light-1: #d127e3;
   --primary-light-2: #d63fe6;
+  --primary-dark-1: #b80eca;
+  --primary-dark-2: #a30cb3;
 
   --secondary: #7e1bcc;
-  --secondary-transparent: rgba(126, 27, 204, 0.85);
-  --secondary-dark-1: #7118b8;
-  --secondary-dark-2: #6516a3;
   --secondary-light-1: #8b32d1;
   --secondary-light-2: #9849d6;
+  --secondary-dark-1: #7118b8;
+  --secondary-dark-2: #6516a3;
 
   --neutral: #858199;
-  --neutral-dark-1: #78748a;
   --neutral-dark-2: #6a677a;
-  --neutral-dark-3: #4d535a;
+  --neutral-dark-1: #78748a;
   --neutral-light-1: #9d9aad;
   --neutral-light-2: #aaa7b8;
   --neutral-light-3: #b6b3c2;
@@ -35,7 +33,16 @@
   --neutral-light-8: #f2f2f4;
   --neutral-light-9: #f7f7f9;
   --neutral-light-10: #fcfcfc;
-  --white: #ffffff;
+  --white: #ffff;
+
+  --special-white: #ffffff;
+  --special-background: #f3f0f7;
+  --special-blue: #1ba1f1;
+  --special-orange: #ff9400;
+  --special-red: #d0021b;
+  --special-dark-red: #bb0218;
+  --special-green: #0f9e48;
+  --special-light-green: #13c65a;
 
   /* --white everywhere except darkmode, which is dracula*/
   --darkmode-static-white: var(--white);
