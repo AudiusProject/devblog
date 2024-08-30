@@ -1,0 +1,97 @@
+---
+authors:
+  - audius_eng
+tags: [engineering]
+slug: /bridging-your-ethereum-identity-to-solana‍
+description: Bridging Your Ethereum Identity to Solana‍
+image: ./img/social-card.png
+date: 2022-09-14T00:00
+---
+
+# ‍Bridging Your Ethereum Identity to Solana‍
+
+## Introduction
+
+Web3 is a rich ecosystem with many competing ideas and technologies. This competition, while great for innovation, also leads to fragmentation and lock-in: the chain you start building on is usually the chain you stay on.
+
+![social card](./img/social-card.png)
+
+<!--truncate-->
+
+Solutions exist for sending funds and messages between chains, but what if you could take it a step further and bring the _identity_ you’ve established on one chain onto another, without ever creating a wallet on the new chain?
+
+We set out to solve this challenge in service of supporting micropayments on Audius, ultimately arriving at a system that allows Audius users to seamlessly use their existing Ethereum identity to transact on Solana. Let’s dive in!
+
+## The Problem
+
+At Audius, we strive to integrate payments and user-to-user transfers seamlessly into the platform. The engineering team spent considerable time exploring how to scale payments beyond Ethereum onto a faster and cheaper L1, ultimately arriving at [Solana](https://solana.com/) as our L1 of choice. Moving to Solana would require bridging the existing Ethereum-based ERC-20 Audio token to a new chain via the [Portal Token Bridge](https://www.portalbridge.com/), and then once the tokens were on Solana, the interesting part: adapting our existing wallet system to work with the new Solana-based $AUDIO.
+
+## Wallets
+
+By design, Audius hides the complexity of crypto key management. We do this so that our community members, who use the platform to discover new underground tracks and support their favorite artists, aren’t burdened by fiddling with browser extensions or learning about seed phrases. Underneath the familiar UI, however, lives a client-side Ethereum wallet – a public/private key pair controlled by the user’s browser – used to sign and authenticate transactions. Every time a user uploads a track, reposts a playlist, or follows a new artist, this wallet is signing and broadcasting EVM transactions.
+
+We call our client-side Ethereum wallet [Hedgehog](https://hedgehog.audius.org/], and it’s been key to providing the benefits of web3 sovereignty and decentralization while still affording a familiar password-based experience.
+
+While we could adapt Hedgehog to work with Solana AUDIO, this approach has issues. Because a user’s public key is derived from their email & password (which never leave the browser), **a new Solana Hedgehog wallet could only be created by an already logged in user.** This means we couldn’t migrate every user to Solana in a single pass, and users who hadn’t been on their accounts recently couldn’t receive Solana AUDIO. This was a nonstarter for building native payment features like tipping.
+
+But what if we could avoid creating any new Hedgehog Solana accounts at all, and use the existing Ethereum identity to access and transfer funds on Solana?
+
+## Bridging Eth Identity to Solana
+
+It turns out there is a way to use your Ethereum wallet to interact with Solana.
+
+Rather than creating new Solana wallets for our users, we designed a new Solana Program (we call it Claimable Token) which controls Solana AUDIO token accounts on behalf of users. Any Solana wallet can permissionlessly interact with the program and deposit funds, and transfer funds **by providing a valid signature from the sender’s existing Audius Ethereum wallets.**
+
+To understand how this works, we need to understand two concepts: Solana _program derived addresses_ (PDAs) and _secp256k1_ signature recovery.
+
+### Program Derived Addresses
+
+A [Solana PDA](https://solanacookbook.com/core-concepts/pdas.html#generating-pdas) is a 32-byte public key which, unlike a regular user-controlled wallet, has no corresponding private key.
+
+PDAs are used to create accounts that are owned and manipulated by Solana programs, rather than users. Importantly, PDAs are deterministically derived from input seeds: the same set of seeds always generates the same PDA.
+
+In our program, we used a user’s Eth public key as a seed to derive a PDA token account. This allowed us to generate accounts ahead of time for the users (all owned by the Claimable Token program), knowing only the user’s publicly available Audius Eth address.
+
+Generating these accounts takes care of receiving funds – to enable sending funds (the fun part), we use secp256k1 signature recovery.
+
+### Signature Recovery 101
+
+In public-key cryptography – a core technology underlying all blockchains – digital signatures are used to authenticate senders of messages. Put simply, signatures allow you to trust that a party is who they claim to be and not another party impersonating them.
+
+A signature is just a large number created when party A “signs” some short message with their private key. Another party, B, can then “recover” A’s public key from the signature and the unsigned message – the act of recovering A’s public key proves to B that the signature must have originated from A, since only A has access to the private key that could have created the signature.
+
+[Secp256k1](https://en.bitcoin.it/wiki/Secp256k1) simply (or not so simply, depending on how deep you go) refers to the parameters used in the algorithm that creates the signature.
+
+### Using Signature Recovery to Authorize Transfers
+
+If Alice wants to transfer some funds out of her Solana Claimable Token account to Bob, she’ll create a signature with her existing Audius Ethereum account, and send it to the Solana program alongside her transfer instruction.
+
+First, the Solana program will first recover Alice’s public Ethereum key from the signature. If that succeeds, it will use that recovered address to re-derive Alice’s Solana $AUDIO account PDA. Finally, that re-derived account is compared to the Solana account Alice is asking to transfer from. If everything matches, we’re ready to perform our transfer.
+
+How does this guarantee only Alice can transfer her funds? The transfer request was signed by the owner of Alice’s Eth private key, so nobody else could be trying to transfer on her behalf. And we also know that the Solana account she’s trying to transfer from is one she controls because the program re-derived that PDA from her recovered Ethereum address, and compared it to the one she asked to transfer from, which was itself derived from her public Ethereum address at account creation.
+
+### Security Considerations
+
+While the design is relatively straightforward, as per usual implementing it revealed a number of interesting issues.
+
+We learned that secp256k1 signature recovery is slow and expensive (in terms of CPU budget) – so slow, in fact, that one can’t perform the signature recovery within the Solana VM at all. Instead, there exists [a standalone deployed program on Solana](https://docs.solana.com/developing/runtime-facilities/programs#secp256k1-program) that performs the signature recovery operation outside the regular Solana execution context.
+
+This program takes as input the signature, the unsigned message, and the expected public key to be recovered, and executes successfully only if it recovers a key that matches the one provided as input.
+
+So rather than performing recovery inside our program itself, we include an additional standalone instruction to the native secp256k1 program in our transaction, right before our transfer instruction. Because the Solana runtime will only execute an instruction if the prior instruction executed successfully, by inserting the signature recovery instruction right before our program instruction we guarantee a successful signature recovery if our program is to execute at all.
+
+Well, that was the theory at least – in practice, using secp256k1 in Solana is fairly far off the well-trodden path and has a number of subtle security concerns lurking just below the surface.
+
+One attack vector is to include a valid secp recovery instruction from a totally different account than the one that controls the token account PDA, which would pass the secp256k1 program successfully. Therefore, it’s not enough to know that the secp program passes; we must check whether the signature recovered in the prior instruction matches the Eth account used to generate the PDA we’re transferring from.
+
+To ensure this, our program must inspect the arguments to the prior instruction, ensuring the secp256k1 program actually ran on the expected values (and that the prior instruction was to the secp256k1 program at all). The process of inspecting the prior instruction is itself also subject to [subtle security vulnerabilities](https://extropy-io.medium.com/solanas-wormhole-hack-post-mortem-analysis-3b68b9e88e13), which prompted an API update from the Solana core team.
+
+While complex and requiring precise implementation, with the [help of our auditors](https://assets.website-files.com/6024b69839b1b755528798ea/620c8096759540ada3f5ace5_Audius%20-%20Security%20Assessment%20for%20Audius%20Protocol%20v1.2.pdf), we found secp256k1 support on Solana to be an amazing tool to unlock cross-chain interoperability.
+
+## Conclusion
+
+Today, all tipping (and future monetization features) on Audius are powered by our Ethereum < > Solana interoperability. It’s a testament to the power of composable primitives that it’s possible to take a core feature, such as token transfers, and rebuild it behind an authentication scheme belonging to a completely different blockchain.
+
+Importantly, all of this complexity happens behind the scenes – users have no idea they’re interacting with a custom program instead of a native Solana token transfer when they send a tip, or ideally have no idea they’re interacting with a blockchain at all.
+
+Now that you know what’s going on under the hood, go show your [favorite artist](https://audius.co/trending) some love with a tip – and if you find this kind of problem really interesting, [Audius is always hiring talented, curious engineers.](https://audius.org/careers)
