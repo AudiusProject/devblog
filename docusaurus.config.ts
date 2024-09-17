@@ -40,8 +40,8 @@ const config: Config = {
           showReadingTime: true,
           sortPosts: "descending",
           blogTitle: "Audius Engineering Blog",
-          blogSidebarTitle: 'All posts',
-          blogSidebarCount: 'ALL',
+          blogSidebarTitle: "All posts",
+          blogSidebarCount: "ALL",
         },
         theme: {
           customCss: "./src/css/custom.css",
@@ -53,6 +53,14 @@ const config: Config = {
   themeConfig: {
     // Replace with your project's social card
     image: "img/social-card.jpg",
+    announcementBar: {
+      id: "amplify_hackathon",
+      content:
+        '👩‍💻 <a target="_blank" rel="noopener noreferrer" href="https://www.audius.events/e/hackathon">Join the Amplify Hackathon!</a> 🚀   Registration Open September 23-30, 2024',
+      backgroundColor: "#7e1bcc",
+      textColor: "#fff",
+      isCloseable: false,
+    },
     navbar: {
       // title: "| Engineering Blog",
       logo: {
